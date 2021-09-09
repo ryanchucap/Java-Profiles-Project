@@ -117,7 +117,7 @@ public class ProfileController {
 	
 	
 	@PostMapping(value="/files/")
-	public void importExcel(@RequestParam MultipartFile excelFile) throws IOException{
+	public void importExcel(@RequestParam("file") MultipartFile excelFile) throws IOException{
 		/*
 		 * import excel sheet
 		 */
