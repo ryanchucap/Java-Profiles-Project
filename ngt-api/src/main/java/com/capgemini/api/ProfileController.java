@@ -3,6 +3,7 @@ package com.capgemini.api;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import java.io.File;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,6 +46,7 @@ public class ProfileController {
         this.profileRepo = profileRepo;
     }
     
+    @CrossOrigin
 	@GetMapping(value = "/test")
 	public void testStuff() {
 		/*
@@ -52,6 +56,7 @@ public class ProfileController {
 		return;
 	}
 	
+	@CrossOrigin
 	@GetMapping(value = "/test2")
 	public Profile testStuff2() {
 		/*
@@ -62,6 +67,7 @@ public class ProfileController {
 		return new Profile();
 	}
 	
+	@CrossOrigin
 	@GetMapping(value = "/employees")
 	public List<Profile> getEmployees() {
 		/*
@@ -72,37 +78,69 @@ public class ProfileController {
 		return this.profileRepo.findAll();
 	}
 	
-	@PostMapping(value="/employees")
-	public String addEmployee(@PathVariable Long id, ModelMap map) {
-		/*
-		 * Create new profile
-		 */
-		Profile prof1 = new Profile();
-		return "";
-	}
+//	@CrossOrigin
+//	@PostMapping(value="/employees")
+//	public String addEmployee(@PathVariable Long id, ModelMap map) {
+//		/*
+//		 * Create new profile
+//		 */
+//		Profile prof1 = new Profile();
+//		return "";
+//	}
 	
+	@CrossOrigin
 	@GetMapping(value="/employees/{id}")
-	public Optional<Profile> getEmployee(@PathVariable Long id) {
+	public Profile getEmployee(@PathVariable Long id) {
 		/*
 		 * Return page for individual profile
 		 */
-		Optional<Profile> prof = this.profileRepo.findById(id);
+		Profile prof = this.profileRepo.findById(id).get();
 		return prof;
 	}
 	
-	@PutMapping(value="/employees/")
-	public void PutEmployee(@RequestParam String name, @RequestParam String phoneNumber, @RequestParam String email,
-			@RequestParam String city, @RequestParam String state, @RequestParam String track,
-			@RequestParam String account, @RequestParam int projectCode, @RequestParam String startDate) {
+	@CrossOrigin
+	@PutMapping(value="/employees/{id}")
+	public void updateEmployee(@RequestBody Map<String, String> payload) {
+		Profile p = this.profileRepo.findById(Long.parseLong(payload.get("id"))).get();
+		p.setName(payload.get("name"));
+		p.setEmail(payload.get("email"));
+		p.setPhone_number(payload.get("phone_number"));
+		p.setCity(payload.get("city"));
+		p.setState(payload.get("state"));
+		p.setTrack(payload.get("track"));
+		p.setAccount(payload.get("account"));
+		p.setProject_code(Integer.parseInt(payload.get("project_code")));
+		this.profileRepo.save(p);
+	}
+	
+//	@CrossOrigin
+//	@PostMapping(value="/employees/")
+//	public void PutEmployee(@RequestParam("name") String name, @RequestParam("phone_number") String phoneNumber, @RequestParam("email") String email,
+//			@RequestParam("city") String city, @RequestParam("state") String state, @RequestParam(value="track") String track,
+//			@RequestParam("account") String account, @RequestParam("project_code") int projectCode, @RequestParam("start_date") String startDate) {
+//		/*
+//		 * Return page for individual profile
+//		 */
+////		Post post = this.postRepository.findById(id);
+////		map.put("post", post);
+//		this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, startDate));
+//		return;
+//	}
+	
+	@CrossOrigin
+	@PostMapping(value="/employees/")
+	public void PutEmployee(@RequestBody Profile p1) {
 		/*
 		 * Return page for individual profile
 		 */
 //		Post post = this.postRepository.findById(id);
 //		map.put("post", post);
-		this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, startDate));
-		return;
+//		this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, startDate));
+//		return;
+		this.profileRepo.save(p1);
 	}
 	
+	@CrossOrigin
 	@DeleteMapping(value="/employees/{id}")
 	public void deleteEmployee(@PathVariable Long id) {
 		/*
@@ -115,7 +153,7 @@ public class ProfileController {
 	}
 	
 	
-	
+	@CrossOrigin
 	@PostMapping(value="/files/")
 	public void importExcel(@RequestParam("file") MultipartFile excelFile) throws IOException{
 		/*
@@ -147,6 +185,7 @@ public class ProfileController {
 		workbook.close();
 	}
 	
+	@CrossOrigin
 	@GetMapping(value="/files/")
 	public void exportExcel(@PathVariable Long id, ModelMap map) {
 		/*

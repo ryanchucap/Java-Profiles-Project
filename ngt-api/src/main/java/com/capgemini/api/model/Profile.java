@@ -47,6 +47,10 @@ public class Profile {
     public String getName() {
     	return name;
     }
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -60,33 +64,60 @@ public class Profile {
     	return email;
     }
     
+    public void setEmail(String email) {
+    	this.email = email;
+    }
+    
     public String getPhone_number() {
     	return phone_number;
+    }
+    
+    public void setPhone_number(String phone_number) {
+    	this.phone_number = phone_number;
     }
     
    public String getTrack() {
     	return track;
     }
+   
+   public void setTrack(String track) {
+	   this.track = track;
+   }
     
     public String getAccount() {
     	return account;
+    }
+    
+    public void setAccount(String account) {
+    	this.account = account;
     }
     
     public String getCity() {
     	return city;
     }
     
+    public void setCity(String city) {
+    	this.city = city;
+    }
+    
     public String getState() {
     	return state;
+    }
+    
+    public void setState(String state) {
+    	this.state = state;
     }
     
     public int getProject_code() {
     	return project_code;
     }
     
+    public void setProject_code(int project_code) {
+    	this.project_code = project_code;
+    }
+    
     public String getStart_date() {
     	return start_date;
     }
-
 
 }
