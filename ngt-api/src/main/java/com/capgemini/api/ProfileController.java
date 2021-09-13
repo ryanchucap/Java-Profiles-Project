@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.Set;
+import java.util.TreeMap;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -187,10 +189,62 @@ public class ProfileController {
 	
 	@CrossOrigin
 	@GetMapping(value="/files/")
-	public void exportExcel(@PathVariable Long id, ModelMap map) {
+	public byte[] exportExcel() {
 		/*
 		 * add a profile
 		 */
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet spreadsheet = workbook.createSheet("Sheet1");
+		XSSFRow row;
+		
+		int rowid = 2;
+		
+		Map<String, Object[]> data = new TreeMap<String, Object[]>();
+		data.put("1", new Object[] {"name", "email", "phone number", "city", "state", "track", "account", "project code", "start date"});
+			
+		List<Profile> profiles = this.profileRepo.findAll();
+		for (int i = 0; i < profiles.size(); i++) {
+			String name = profiles.get(i).getName();
+			String email = profiles.get(i).getEmail();
+			String phone_number = profiles.get(i).getPhone_number();
+			String city = profiles.get(i).getCity();
+			String state = profiles.get(i).getState();
+			String track = profiles.get(i).getTrack();
+			String account = profiles.get(i).getAccount();
+			String project_code = String.valueOf(profiles.get(i).getProject_code());
+			String start_date = profiles.get(i).getStart_date();
+			data.put(String.valueOf(rowid++), new Object[] {name, email, phone_number, city,
+					state, track, account, project_code, start_date});
+		}
+		
+		Set<String> keyid = data.keySet();
+		rowid = 0;
+		
+		for(String key : keyid) {
+			row = spreadsheet.createRow(rowid++);
+			Object[] objectArr = data.get(key);
+			int cellid = 0;
+			
+			for (Object obj : objectArr) {
+				Cell cell = row.createCell(cellid++);
+				cell.setCellValue((String)obj);
+			}
+		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+		//write to output
+		try {
+			workbook.write(out);
+		}
+		catch (IOException e) {}
+		finally {
+			try {
+				out.close();
+				workbook.close();
+			}
+			catch (IOException e) {}
+		}
+		return out.toByteArray();
 	}
 	
 	
