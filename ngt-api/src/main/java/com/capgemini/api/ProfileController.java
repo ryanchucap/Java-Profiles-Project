@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import com.capgemini.api.model.Profile;
 import com.capgemini.api.data.ProfileRepository;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -71,13 +73,14 @@ public class ProfileController {
 	
 	@CrossOrigin
 	@GetMapping(value = "/employees")
-	public List<Profile> getEmployees() {
+	public ResponseEntity<List<Profile>> getEmployees() {
 		/*
 		 * Return page that lists profiles from excel sheet
 		 */
 //		List<Post> list = this.postRepository.getAllPosts();
 //		map.put("posts", list);
-		return this.profileRepo.findAll();
+//		return this.profileRepo.findAll();
+		return ResponseEntity.ok(this.profileRepo.findAll());
 	}
 	
 //	@CrossOrigin
@@ -92,18 +95,33 @@ public class ProfileController {
 	
 	@CrossOrigin
 	@GetMapping(value="/employees/{id}")
-	public Profile getEmployee(@PathVariable Long id) {
+	public ResponseEntity<Profile> getEmployee(@PathVariable Long id) {
 		/*
 		 * Return page for individual profile
 		 */
-		Profile prof = this.profileRepo.findById(id).get();
-		return prof;
+		Optional<Profile> op = this.profileRepo.findById(id);
+		Profile p;
+		if (op.isPresent()) {
+			p = op.get();
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(p);
 	}
 	
 	@CrossOrigin
 	@PutMapping(value="/employees/{id}")
-	public void updateEmployee(@RequestBody Map<String, String> payload) {
-		Profile p = this.profileRepo.findById(Long.parseLong(payload.get("id"))).get();
+	public ResponseEntity<Void> updateEmployee(@RequestBody Map<String, String> payload) {
+		Optional<Profile> op = this.profileRepo.findById(Long.parseLong(payload.get("id")));
+		Profile p;
+		if (op.isPresent()) {
+			p = op.get();
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
 		p.setName(payload.get("name"));
 		p.setEmail(payload.get("email"));
 		p.setPhone_number(payload.get("phone_number"));
@@ -113,6 +131,8 @@ public class ProfileController {
 		p.setAccount(payload.get("account"));
 		p.setProject_code(Integer.parseInt(payload.get("project_code")));
 		this.profileRepo.save(p);
+		
+		return ResponseEntity.ok().build();
 	}
 	
 //	@CrossOrigin
@@ -131,7 +151,7 @@ public class ProfileController {
 	
 	@CrossOrigin
 	@PostMapping(value="/employees/")
-	public void PutEmployee(@RequestBody Profile p1) {
+	public ResponseEntity<Void> PutEmployee(@RequestBody Profile p1) {
 		/*
 		 * Return page for individual profile
 		 */
@@ -140,18 +160,19 @@ public class ProfileController {
 //		this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, startDate));
 //		return;
 		this.profileRepo.save(p1);
+		return ResponseEntity.ok().build();
 	}
 	
 	@CrossOrigin
 	@DeleteMapping(value="/employees/{id}")
-	public void deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
 		/*
 		 * Return page for individual profile
 		 */
 //		Post post = this.postRepository.findById(id);
 //		map.put("post", post);
 		this.profileRepo.deleteById(id);
-		return;
+		return ResponseEntity.ok().build();
 	}
 	
 	
