@@ -13,7 +13,7 @@ public class Profile {
     
     private String name;
     private String email;
-    private String phone_number;
+    private long phone_number;
     private String city;
     private String state;
     private String track;
@@ -21,7 +21,7 @@ public class Profile {
     private int project_code;
 //    @Temporal(TemporalType.DATE)
 //    private Date start_date;
-    private String start_date;
+    private Date start_date;
     
     public Profile() {
     	super();
@@ -31,8 +31,8 @@ public class Profile {
     	this.name = name;
     }
 
-    public Profile(String name, String email, String phone_number, String city, String state,
-    		String track, String account, int project_code, String start_date) {
+    public Profile(String name, String email, long phone_number, String city, String state,
+    		String track, String account, int project_code, Date start_date) {
         this.name = name;
         this.email = email;
         this.phone_number = phone_number;
@@ -68,11 +68,11 @@ public class Profile {
     	this.email = email;
     }
     
-    public String getPhone_number() {
+    public long getPhone_number() {
     	return phone_number;
     }
     
-    public void setPhone_number(String phone_number) {
+    public void setPhone_number(long phone_number) {
     	this.phone_number = phone_number;
     }
     
@@ -116,7 +116,7 @@ public class Profile {
     	this.project_code = project_code;
     }
     
-    public String getStart_date() {
+    public Date getStart_date() {
     	return start_date;
     }
 

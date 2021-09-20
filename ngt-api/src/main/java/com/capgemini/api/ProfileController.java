@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -124,7 +125,7 @@ public class ProfileController {
 		}
 		p.setName(payload.get("name"));
 		p.setEmail(payload.get("email"));
-		p.setPhone_number(payload.get("phone_number"));
+		p.setPhone_number(Long.parseLong(payload.get("phone_number")));
 		p.setCity(payload.get("city"));
 		p.setState(payload.get("state"));
 		p.setTrack(payload.get("track"));
@@ -194,13 +195,29 @@ public class ProfileController {
 			
 			String name = row.getCell(0).getStringCellValue();
 			String email = row.getCell(1).getStringCellValue();
-			String phoneNumber = row.getCell(2).getStringCellValue();
+			long phoneNumber;
+			Cell c = row.getCell(2);
+			if (c == null || c.getCellType() == CellType.BLANK) {
+				phoneNumber = -1;
+			}
+			else {
+				phoneNumber = (long) c.getNumericCellValue();
+			}
+//			long phoneNumber = (long) row.getCell(2).getNumericCellValue();
 			String city = row.getCell(3).getStringCellValue();
 			String state = row.getCell(4).getStringCellValue();
 			String track = row.getCell(5).getStringCellValue();
 			String account = row.getCell(6).getStringCellValue();
-			int projectCode = (int) (row.getCell(7).getNumericCellValue());
-			String date = row.getCell(8).getStringCellValue();
+			int projectCode;
+			Cell project_cell = row.getCell(7);
+			if (project_cell == null || project_cell.getCellType() == CellType.BLANK) { 
+				projectCode = -1;
+			}
+			else {
+				projectCode = (int) project_cell.getNumericCellValue();
+			}
+			// int projectCode = (int) (row.getCell(7).getNumericCellValue());
+			Date date = row.getCell(8).getDateCellValue();
 			
 			this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, date));
 		}
@@ -227,13 +244,13 @@ public class ProfileController {
 		for (int i = 0; i < profiles.size(); i++) {
 			String name = profiles.get(i).getName();
 			String email = profiles.get(i).getEmail();
-			String phone_number = profiles.get(i).getPhone_number();
+			long phone_number = profiles.get(i).getPhone_number();
 			String city = profiles.get(i).getCity();
 			String state = profiles.get(i).getState();
 			String track = profiles.get(i).getTrack();
 			String account = profiles.get(i).getAccount();
 			String project_code = String.valueOf(profiles.get(i).getProject_code());
-			String start_date = profiles.get(i).getStart_date();
+			Date start_date = profiles.get(i).getStart_date();
 			data.put(String.valueOf(rowid++), new Object[] {name, email, phone_number, city,
 					state, track, account, project_code, start_date});
 		}
