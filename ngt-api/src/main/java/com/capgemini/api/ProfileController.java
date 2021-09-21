@@ -51,27 +51,7 @@ public class ProfileController {
         this.profileRepo = profileRepo;
     }
     
-    @CrossOrigin
-	@GetMapping(value = "/test")
-	public void testStuff() {
-		/*
-		 * Return page that lists profiles from excel sheet
-		 */
-		Profile p1 = new Profile("adam");
-		return;
-	}
-	
-	@CrossOrigin
-	@GetMapping(value = "/test2")
-	public Profile testStuff2() {
-		/*
-		 * Return page that lists profiles from excel sheet
-		 */
-		Profile p1 = new Profile("adam");
-		this.profileRepo.save(new Profile());
-		return new Profile();
-	}
-	
+
 	@CrossOrigin
 	@GetMapping(value = "/employees")
 	public ResponseEntity<List<Profile>> getEmployees() {
@@ -84,15 +64,7 @@ public class ProfileController {
 		return ResponseEntity.ok(this.profileRepo.findAll());
 	}
 	
-//	@CrossOrigin
-//	@PostMapping(value="/employees")
-//	public String addEmployee(@PathVariable Long id, ModelMap map) {
-//		/*
-//		 * Create new profile
-//		 */
-//		Profile prof1 = new Profile();
-//		return "";
-//	}
+
 	
 	@CrossOrigin
 	@GetMapping(value="/employees/{id}")
@@ -152,7 +124,7 @@ public class ProfileController {
 	
 	@CrossOrigin
 	@PostMapping(value="/employees/")
-	public ResponseEntity<Void> PutEmployee(@RequestBody Profile p1) {
+	public ResponseEntity<Profile> PutEmployee(@RequestBody Profile p1) {
 		/*
 		 * Return page for individual profile
 		 */
@@ -161,7 +133,7 @@ public class ProfileController {
 //		this.profileRepo.save(new Profile(name, email, phoneNumber, city, state, track, account, projectCode, startDate));
 //		return;
 		this.profileRepo.save(p1);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(p1);
 	}
 	
 	@CrossOrigin
@@ -249,7 +221,7 @@ public class ProfileController {
 			String state = profiles.get(i).getState();
 			String track = profiles.get(i).getTrack();
 			String account = profiles.get(i).getAccount();
-			String project_code = String.valueOf(profiles.get(i).getProject_code());
+			int project_code = profiles.get(i).getProject_code();
 			Date start_date = profiles.get(i).getStart_date();
 			data.put(String.valueOf(rowid++), new Object[] {name, email, phone_number, city,
 					state, track, account, project_code, start_date});
