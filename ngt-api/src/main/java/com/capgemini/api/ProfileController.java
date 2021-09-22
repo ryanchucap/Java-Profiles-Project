@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -237,7 +239,25 @@ public class ProfileController {
 			
 			for (Object obj : objectArr) {
 				Cell cell = row.createCell(cellid++);
-				cell.setCellValue((String)obj);
+				
+				if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				}
+				else if (obj instanceof Integer) {
+					cell.setCellValue((Integer) obj);
+				}
+				else if (obj instanceof Long) {
+					cell.setCellValue((Long) obj);
+				}
+				else if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+					CellStyle cellStyle = workbook.createCellStyle();
+					CreationHelper createHelper = workbook.getCreationHelper();
+					cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
+					
+					
+					cell.setCellStyle(cellStyle);
+				}
 			}
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
