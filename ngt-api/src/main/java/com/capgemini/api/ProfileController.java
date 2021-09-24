@@ -160,6 +160,7 @@ public class ProfileController {
 		
 		//FileInputStream fis = new FileInputStream(new File("C:\\Users\\ryachu\\OneDrive - Capgemini\\testsheet.xlsx"));
 //		XSSFWorkbook workbook= new XSSFWorkbook(fis);
+		this.profileRepo.deleteAll();
 		XSSFWorkbook workbook= new XSSFWorkbook(excelFile.getInputStream());
 
 		XSSFSheet worksheet = workbook.getSheetAt(0);
